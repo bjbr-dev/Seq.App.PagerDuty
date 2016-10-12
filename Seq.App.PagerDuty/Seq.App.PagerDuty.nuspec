@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Seq.App.PagerDuty</id>
+    <version>$version$</version>
+    <authors>Berkeleybross</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Create incidents in PagerDuty from Seq entries</description>
+    <language>en-US</language>
+    <projectUrl>https://github.com/berkeleybross/Seq.App.PagerDuty</projectUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <tags>seq-app seq serilog events pagerduty</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\Seq.App.PagerDuty.dll" target="lib\net45" />
+    <file src="bin\Release\RestSharp.dll" target="lib\net45" />
+    <file src="bin\Release\PagerDutyAPI.dll" target="lib\net45" />
+  </files>
+</package>
