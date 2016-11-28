@@ -20,6 +20,9 @@ namespace Seq.App.PagerDuty
         private const string ApplicationNameHelp =
             "The name this app should use when creating an incident in PagerDuty. Defaults to " + DefaultApplicationName;
 
+        private const string IncidentLinkHelp = "The URL this app should use when creating an incident in PagerDuty. Defaults to empty. " +
+                                                "{0} will be replaced with the (query string encoded) Incident Id Property Name";
+
         private IntegrationAPI client;
         private List<string> additionalProperties;
 
@@ -40,6 +43,9 @@ namespace Seq.App.PagerDuty
              IsOptional = true,
              HelpText = "The name of the property in the event being logged to send to PagerDuty as the incident Id.")]
         public string IncidentIdPropertyName { get; set; }
+
+        [SeqAppSetting(DisplayName = "Incident Link URL", IsOptional = true, HelpText = IncidentLinkHelp)]
+        public string IncidentLink { get; set; }
 
         [SeqAppSetting(
              DisplayName = "Additional Property Names",
@@ -66,7 +72,14 @@ namespace Seq.App.PagerDuty
             }
 
             var incidentId = GetPropertyOrDefault(evt, this.IncidentIdPropertyName);
-            var result = this.client.Trigger(evt.Data.RenderedMessage, data, incidentId?.ToString());
+            var contexts = new List<Context>();
+            if (incidentId != null && !string.IsNullOrEmpty(this.IncidentLink))
+            {
+                var url = string.Format(this.IncidentLink, Uri.EscapeDataString(incidentId?.ToString()));
+                contexts.Add(new Link(url, "Show in " + this.ApplicationName));
+            }
+
+            var result = this.client.Trigger(evt.Data.RenderedMessage, data, incidentId?.ToString(), contexts);
             if (!result.IsSuccess())
             {
                 this.Log.Error("Error sending event {EventId} to PagerDuty: {Message}", evt.Id, result.Message);
